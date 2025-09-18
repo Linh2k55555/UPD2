@@ -3,17 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lưu ảnh GitHub JSON</title>
+  <title>Lưu trữ dữ liệu UPD</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    h1 { font-size: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-    img { width: 100%; border: 1px solid #ccc; border-radius: 5px; }
-    textarea { width: 100%; margin-top: 5px; font-size: 12px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f6f9;
+      color: #333;
+    }
+    h1 {
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input[type="file"] {
+      display: block;
+      margin: 0 auto;
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 10px;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    textarea {
+      width: 100%;
+      margin-top: 10px;
+      font-size: 12px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: none;
+    }
+    button {
+      margin-top: 8px;
+      width: 100%;
+      padding: 6px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 <body>
-  <h1>📸 Upload Ảnh UOD</h1>
+  <h1>Lưu trữ dữ liệu UPD</h1>
   <input type="file" accept="image/*" id="upload" />
   <div id="images" class="grid"></div>
 
@@ -37,19 +91,19 @@
       renderImages();
     }
 
-
     function renderImages() {
       imagesContainer.innerHTML = "";
       images.forEach((img, i) => {
         const div = document.createElement("div");
+        div.className = "card";
         div.innerHTML = `
           <img src="${img}" alt="uploaded-${i}">
           <textarea readonly rows="3">${img}</textarea>
+          <button onclick="copyLink('${img}')">Sao chép link</button>
         `;
         imagesContainer.appendChild(div);
       });
     }
-
 
     async function handleUpload(e) {
       const file = e.target.files[0];
@@ -60,14 +114,12 @@
         const base64 = reader.result;
         const newImages = [...images, base64];
 
-    
         const res = await fetch(
           `https://api.github.com/repos/${GITHUB_USER}/${REPO}/contents/${FILE_PATH}`,
           { headers: { Authorization: `token ${TOKEN}` } }
         );
         const fileData = await res.json();
 
-    
         await fetch(
           `https://api.github.com/repos/${GITHUB_USER}/${REPO}/contents/${FILE_PATH}`,
           {
@@ -91,8 +143,13 @@
       reader.readAsDataURL(file);
     }
 
-    document.getElementById("upload").addEventListener("change", handleUpload);
+    function copyLink(link) {
+      navigator.clipboard.writeText(link).then(() => {
+        alert("Đã sao chép link ảnh!");
+      });
+    }
 
+    document.getElementById("upload").addEventListener("change", handleUpload);
     loadImages();
   </script>
 </body>
