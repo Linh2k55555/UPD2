@@ -4,7 +4,7 @@ const GITHUB_USER = "Linh2k55555";
 const REPO = "UPD";
 const FILE_PATH = "images.json";
 const BRANCH = "main";
-const TOKEN = ""; // ⚠️ không nên để lộ token trực tiếp, nên dùng server proxy
+const TOKEN = "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"; // ⚠️ không nên để lộ token trực tiếp, nên dùng server proxy
 
 function App() {
   const [images, setImages] = useState([]);
