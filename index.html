@@ -22,12 +22,11 @@
     const REPO = "UPD";
     const FILE_PATH = "images.json";
     const BRANCH = "main";
-    const TOKEN = ""; // ⚠️ Không để token ở đây, tốt nhất dùng server proxy
+    const TOKEN = "";
 
     const imagesContainer = document.getElementById("images");
     let images = [];
 
-    // Load images.json từ GitHub
     async function loadImages() {
       try {
         const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/${BRANCH}/${FILE_PATH}`);
@@ -38,7 +37,7 @@
       renderImages();
     }
 
-    // Render ảnh ra màn hình
+
     function renderImages() {
       imagesContainer.innerHTML = "";
       images.forEach((img, i) => {
@@ -51,7 +50,7 @@
       });
     }
 
-    // Upload ảnh và commit lên GitHub
+
     async function handleUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -61,14 +60,14 @@
         const base64 = reader.result;
         const newImages = [...images, base64];
 
-        // Lấy SHA của file hiện tại
+    
         const res = await fetch(
           `https://api.github.com/repos/${GITHUB_USER}/${REPO}/contents/${FILE_PATH}`,
           { headers: { Authorization: `token ${TOKEN}` } }
         );
         const fileData = await res.json();
 
-        // Commit file mới
+    
         await fetch(
           `https://api.github.com/repos/${GITHUB_USER}/${REPO}/contents/${FILE_PATH}`,
           {
@@ -94,7 +93,6 @@
 
     document.getElementById("upload").addEventListener("change", handleUpload);
 
-    // Load khi mở web
     loadImages();
   </script>
 </body>
