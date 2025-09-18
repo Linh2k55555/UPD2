@@ -1,24 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lưu trữ dữ liệu UPD</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f6f8; }
-    h1 { font-size: 22px; text-align: center; margin-bottom: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-    .card { background: white; border-radius: 12px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s; }
-    .card:hover { transform: translateY(-3px); }
-    img { width: 100%; border-radius: 8px; }
-    textarea { width: 100%; margin-top: 8px; font-size: 12px; border: 1px solid #ccc; border-radius: 6px; padding: 4px; resize: none; }
-    button { margin-top: 6px; padding: 6px 10px; font-size: 12px; cursor: pointer; border: none; border-radius: 6px; background: #4CAF50; color: white; }
-    button:hover { background: #43a047; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      margin: 0;
+      background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+      color: #333;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    header h1 {
+      font-size: 26px;
+      margin: 0;
+      color: #2c3e50;
+    }
+    header p {
+      font-size: 14px;
+      color: #555;
+    }
+    .upload-box {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .upload-label {
+      padding: 10px 20px;
+      background: #1976d2;
+      color: white;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .upload-label:hover {
+      background: #1565c0;
+    }
+    #upload {
+      display: none;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    textarea {
+      width: 100%;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 6px;
+      resize: none;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+    button {
+      flex: 1;
+      padding: 8px 0;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #4CAF50;
+      color: white;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #43a047;
+    }
+    button.secondary {
+      background: #2196f3;
+    }
+    button.secondary:hover {
+      background: #1976d2;
+    }
   </style>
 </head>
 <body>
-  <h1>📂 Lưu trữ dữ liệu UPD</h1>
-  <input type="file" accept="image/*" id="upload" />
+  <header>
+    <h1>📂 Lưu trữ dữ liệu UPD</h1>
+  </header>
+
+  <div class="upload-box">
+    <label class="upload-label" for="upload">📤 Tải ảnh lên</label>
+    <input type="file" accept="image/*" id="upload" />
+  </div>
+
   <div id="images" class="grid"></div>
 
   <script>
@@ -26,7 +124,7 @@
     const REPO = "UPD";
     const FILE_PATH = "images.json";
     const BRANCH = "main";
-    const TOKEN = ""; // ⚠️ thêm token của bạn ở đây
+    const TOKEN = ""; // ⚠️ Thêm token của bạn ở đây
 
     const imagesContainer = document.getElementById("images");
     let images = [];
@@ -50,8 +148,10 @@
         div.innerHTML = `
           <img src="${link}" alt="uploaded-${i}">
           <textarea readonly rows="2">${link}</textarea>
-          <button onclick="copyLink('${link}')">Sao chép link</button>
-          <button onclick="window.open('${link}', '_blank')">Mở ảnh</button>
+          <div class="btn-group">
+            <button onclick="copyLink('${link}')">📋 Sao chép</button>
+            <button class="secondary" onclick="window.open('${link}', '_blank')">🔗 Mở ảnh</button>
+          </div>
         `;
         imagesContainer.appendChild(div);
       });
@@ -67,7 +167,7 @@
       // Đọc file thành base64
       const reader = new FileReader();
       reader.onloadend = async () => {
-        const base64 = reader.result.split(",")[1]; // bỏ "data:image/png;base64,"
+        const base64 = reader.result.split(",")[1];
 
         // Upload file ảnh vào repo
         await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO}/contents/${path}`, {
@@ -120,7 +220,7 @@
 
     function copyLink(link) {
       navigator.clipboard.writeText(link).then(() => {
-        alert("Đã sao chép link!");
+        alert("✅ Đã sao chép link!");
       });
     }
 
